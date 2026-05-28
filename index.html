@@ -13,25 +13,52 @@
         .text-clay { color: #9C412E; }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <nav class="max-w-7xl mx-auto flex justify-between items-center py-6 border-b border-stone-300">
+<body>
+    <nav class="max-w-6xl mx-auto flex justify-between items-center py-8 px-6 border-b border-stone-300">
         <h1 class="text-3xl font-bold text-clay">Cinco H Ranch</h1>
-        <div class="space-x-6 text-sm font-semibold uppercase tracking-widest">
-            <a href="#" class="hover:text-clay">Shop All</a>
-            <a href="#" class="hover:text-clay">Our Story</a>
+        <div class="space-x-8 text-sm font-semibold uppercase tracking-widest hidden md:flex">
+            <a href="#products" class="hover:text-clay">Shop</a>
+            <a href="#story" class="hover:text-clay">Our Story</a>
+            <a href="#benefits" class="hover:text-clay">Benefits</a>
             <button id="cartBtn" class="bg-clay text-white px-6 py-2 rounded-full">Cart (0)</button>
         </div>
     </nav>
     
-    <header class="max-w-7xl mx-auto py-20 text-center">
-        <h2 class="text-6xl mb-6">Authentic Skin Nourishment.</h2>
-        <p class="text-xl max-w-2xl mx-auto mb-10">Handcrafted on our Texas homestead using 100% natural tallow and lard. Ancestral recipes designed to nourish the body and soul.</p>
+    <header class="max-w-4xl mx-auto py-24 px-6 text-center">
+        <h2 class="text-6xl md:text-7xl mb-8 leading-tight">Ancestral Skincare,<br>Crafted on our Texas Homestead.</h2>
+        <p class="text-xl mb-12 text-stone-700">Sustainable skincare from 100% all-natural beef tallow and pure lard. Formulations designed to nourish the body and soul, free from chemicals.</p>
         <a href="#products" class="bg-clay text-white px-10 py-4 rounded-full text-lg">Shop Natural Skincare</a>
     </header>
 
-    <main id="products" class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-        <!-- Products load here -->
+    <section id="benefits" class="max-w-6xl mx-auto py-20 px-6 bg-white border border-stone-200 rounded-lg my-12">
+        <h3 class="text-4xl text-center mb-16">Why Tallow & Lard?</h3>
+        <div class="grid md:grid-cols-2 gap-12">
+            <div>
+                <h4 class="text-2xl mb-4 text-clay">Bio-Compatible Nourishment</h4>
+                <p>Tallow and lard closely mimic the lipids of your skin, meaning they absorb effortlessly to hydrate and repair your skin barrier, unlike synthetic chemical moisturizers.</p>
+            </div>
+            <div>
+                <h4 class="text-2xl mb-4 text-clay">Fat-Soluble Vitamins</h4>
+                <p>Rich in Vitamins A, D, E, and K—all the nutrients needed for optimal skin health, elasticity, and anti-inflammatory healing.</p>
+            </div>
+        </div>
+    </section>
+
+    <main id="products" class="max-w-6xl mx-auto px-6 py-20">
+        <h3 class="text-4xl text-center mb-16">Our Collection</h3>
+        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Products load here -->
+        </div>
     </main>
+
+    <section id="story" class="max-w-4xl mx-auto py-20 px-6 text-center bg-stone-100">
+        <h3 class="text-4xl mb-8">Our Mission</h3>
+        <p class="text-lg leading-relaxed text-stone-700">Rancho de Cinco Hijas (5 Daughters Ranch) is named for the five young ladies in our family. Carol, a healthcare professional, and Justin, our ranch operator, together craft historical homestead recipes to help people eliminate the chemicals in their everyday products. Every product embodies the essence of nature and old-time Homestead traditions.</p>
+    </section>
+
+    <footer class="max-w-6xl mx-auto py-12 px-6 text-center text-sm text-stone-500 border-t border-stone-300">
+        <p>&copy; 2026 Cinco H Ranch Naturals. Crafted in Bangs, Texas.</p>
+    </footer>
 
     <script type="module">
         import { createClient } from 'https://esm.sh/@wix/sdk';
@@ -45,20 +72,18 @@
 
         async function loadProducts() {
             const { products: items } = await client.products.queryProducts().find();
-            const container = document.getElementById('products');
+            const container = document.getElementById('product-grid');
             container.innerHTML = items.map(p => `
                 <div class="group">
                     <img src="${p.media?.main?.image?.url || 'https://static.wixstatic.com/media/32290d_d6061a7128544aee8580c043661f6a81~mv2.png'}" 
-                         alt="${p.name}" class="w-full h-80 object-cover mb-4 rounded-sm">
+                         alt="${p.name}" class="w-full h-80 object-cover mb-4 rounded-sm shadow-md">
                     <h3 class="text-xl mb-1">${p.name}</h3>
                     <p class="text-clay font-bold mb-4">${p.price.formatted.price}</p>
                     <button class="border border-stone-800 px-6 py-2 w-full hover:bg-clay hover:text-white transition-colors" 
-                            onclick="addToCart('${p.id}')">Add to Cart</button>
+                            onclick="alert('Adding to cart...')">Add to Cart</button>
                 </div>
             `).join('');
         }
-
-        window.addToCart = (id) => alert('Item added to cart!');
         loadProducts();
     </script>
 </body>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinco H Ranch Naturals | Storefront</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prata&family=Cabin:wght@400;600&display=swap');
+        body { font-family: 'Cabin', sans-serif; background-color: #FAF6F0; color: #2B2725; }
+        h1, h2, h3 { font-family: 'Prata', serif; }
+        .accent-clay { color: #9C412E; }
+        .bg-clay { background-color: #9C412E; }
+    </style>
+</head>
+<body>
+    <nav class="p-6 flex justify-between items-center max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold accent-clay">Cinco H Ranch</h1>
+        <button id="cartBtn" class="bg-clay text-white px-4 py-2 rounded-full">Cart (0)</button>
+    </nav>
+    
+    <main id="products" class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Products will load here -->
+    </main>
+
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@wix/sdk';
+        import { products } from 'https://esm.sh/@wix/stores';
+        import { WIX_CONFIG } from './config.js';
+
+        const client = createClient({
+            modules: { products },
+            auth: { clientId: WIX_CONFIG.clientId }
+        });
+
+        async function loadProducts() {
+            const { products: items } = await client.products.queryProducts().find();
+            const container = document.getElementById('products');
+            container.innerHTML = items.map(p => `
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+                    <h2 class="text-xl mb-2">${p.name}</h2>
+                    <p class="text-clay font-bold mb-4">$${p.price.formatted.price}</p>
+                    <button class="bg-clay text-white px-6 py-2 rounded-full w-full" onclick="addToCart('${p.id}')">Add to Cart</button>
+                </div>
+            `).join('');
+        }
+
+        window.addToCart = (id) => {
+            console.log('Adding to cart:', id);
+            alert('Adding to cart! (Checkout coming next...)');
+        };
+
+        loadProducts();
+    </script>
+</body>
+</html>

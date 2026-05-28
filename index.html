@@ -3,24 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinco H Ranch Naturals | Storefront</title>
+    <title>Cinco H Ranch Naturals | Authentic Texas Homestead Skincare</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prata&family=Cabin:wght@400;600&display=swap');
         body { font-family: 'Cabin', sans-serif; background-color: #FAF6F0; color: #2B2725; }
         h1, h2, h3 { font-family: 'Prata', serif; }
-        .accent-clay { color: #9C412E; }
         .bg-clay { background-color: #9C412E; }
+        .text-clay { color: #9C412E; }
     </style>
 </head>
-<body>
-    <nav class="p-6 flex justify-between items-center max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold accent-clay">Cinco H Ranch</h1>
-        <button id="cartBtn" class="bg-clay text-white px-4 py-2 rounded-full">Cart (0)</button>
+<body class="p-4 md:p-8">
+    <nav class="max-w-7xl mx-auto flex justify-between items-center py-6 border-b border-stone-300">
+        <h1 class="text-3xl font-bold text-clay">Cinco H Ranch</h1>
+        <div class="space-x-6 text-sm font-semibold uppercase tracking-widest">
+            <a href="#" class="hover:text-clay">Shop All</a>
+            <a href="#" class="hover:text-clay">Our Story</a>
+            <button id="cartBtn" class="bg-clay text-white px-6 py-2 rounded-full">Cart (0)</button>
+        </div>
     </nav>
     
-    <main id="products" class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Products will load here -->
+    <header class="max-w-7xl mx-auto py-20 text-center">
+        <h2 class="text-6xl mb-6">Authentic Skin Nourishment.</h2>
+        <p class="text-xl max-w-2xl mx-auto mb-10">Handcrafted on our Texas homestead using 100% natural tallow and lard. Ancestral recipes designed to nourish the body and soul.</p>
+        <a href="#products" class="bg-clay text-white px-10 py-4 rounded-full text-lg">Shop Natural Skincare</a>
+    </header>
+
+    <main id="products" class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+        <!-- Products load here -->
     </main>
 
     <script type="module">
@@ -37,19 +47,18 @@
             const { products: items } = await client.products.queryProducts().find();
             const container = document.getElementById('products');
             container.innerHTML = items.map(p => `
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
-                    <h2 class="text-xl mb-2">${p.name}</h2>
-                    <p class="text-clay font-bold mb-4">$${p.price.formatted.price}</p>
-                    <button class="bg-clay text-white px-6 py-2 rounded-full w-full" onclick="addToCart('${p.id}')">Add to Cart</button>
+                <div class="group">
+                    <img src="${p.media?.main?.image?.url || 'https://static.wixstatic.com/media/32290d_d6061a7128544aee8580c043661f6a81~mv2.png'}" 
+                         alt="${p.name}" class="w-full h-80 object-cover mb-4 rounded-sm">
+                    <h3 class="text-xl mb-1">${p.name}</h3>
+                    <p class="text-clay font-bold mb-4">${p.price.formatted.price}</p>
+                    <button class="border border-stone-800 px-6 py-2 w-full hover:bg-clay hover:text-white transition-colors" 
+                            onclick="addToCart('${p.id}')">Add to Cart</button>
                 </div>
             `).join('');
         }
 
-        window.addToCart = (id) => {
-            console.log('Adding to cart:', id);
-            alert('Adding to cart! (Checkout coming next...)');
-        };
-
+        window.addToCart = (id) => alert('Item added to cart!');
         loadProducts();
     </script>
 </body>

@@ -1,6 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinco H Ranch Naturals | Texas Tallow Skincare & Handmade Soaps</title>
+    <meta name="description" content="Shop handmade tallow skincare, natural soaps, creams, stick balms, and shave soaps from Cinco H Ranch Naturals in Bangs, Texas.">
+    <meta property="og:title" content="Cinco H Ranch Naturals | Texas Tallow Skincare">
+    <meta property="og:description" content="Handmade tallow skincare, natural soaps, creams, and balms from a Texas homestead.">
+    <meta property="og:url" content="https://www.cincohranchnaturals.com">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cinco H Ranch Naturals | Texas Tallow Skincare">
+    <meta name="twitter:description" content="Handmade tallow skincare, natural soaps, creams, and balms from a Texas homestead.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prata&family=Cabin:wght@400;600&display=swap');
+        body { font-family: 'Cabin', sans-serif; background-color: #FAF6F0; color: #2B2725; }
+        h1, h2, h3 { font-family: 'Prata', serif; }
+        .bg-clay { background-color: #9C412E; }
+        .text-clay { color: #9C412E; }
+    </style>
+</head>
 <body>
-    <h1>TESTING TEST 123</h1>
+    <header class="w-full">
+        <img src="./cinco-h-ranch_tradition_imagen4_clean.png"
+             alt="Cinco H Ranch Naturals — Texas homestead tallow skincare"
+             class="w-full object-cover max-h-96">
+    </header>
+
+    <nav class="max-w-7xl mx-auto flex justify-between items-center py-8 px-6 border-b border-stone-300">
+        <h1 class="text-3xl font-bold text-clay">Cinco H Ranch</h1>
+        <div class="flex items-center space-x-6 text-sm font-semibold uppercase tracking-widest">
+            <input type="text" id="search" placeholder="Search products..." class="px-4 py-2 rounded-full border border-stone-300">
+            <button id="cartBtn" class="bg-clay text-white px-6 py-2 rounded-full">Checkout</button>
+        </div>
+    </nav>
+    
+    <div class="max-w-7xl mx-auto px-6 py-8 flex space-x-4">
+        <button onclick="filterProducts('all')" class="px-4 py-2 border border-clay rounded-full">All</button>
+        <button onclick="filterProducts('soap')" class="px-4 py-2 border border-clay rounded-full">Soaps</button>
+        <button onclick="filterProducts('cream')" class="px-4 py-2 border border-clay rounded-full">Creams</button>
+        <button onclick="filterProducts('balm')" class="px-4 py-2 border border-clay rounded-full">Balms</button>
+    </div>
+
+    <main id="products" class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <!-- Products load here -->
+    </main>
+
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@wix/sdk';
+        import { products, cart } from 'https://esm.sh/@wix/stores';
+        import { WIX_CONFIG } from './config.js';
+
+        const client = createClient({
+            modules: { products, cart },
+            auth: { clientId: WIX_CONFIG.clientId }
+        });
+
+        let allProducts = [];
+
+        async function loadProducts() {
+            const { products: items } = await client.products.queryProducts().find();
+            allProducts = items;
+            renderProducts(allProducts);
+        }
+
+        window.renderProducts = (items) => {
+            const container = document.getElementById('products');
+            container.innerHTML = items.map(p => `
+                <div class="group border border-stone-200 p-4 rounded-sm">
+                    <img src="${p.media?.main?.image?.url || 'https://static.wixstatic.com/media/32290d_d6061a7128544aee8580c043661f6a81~mv2.png'}"
+                         alt="${p.name} — Cinco H Ranch Naturals"
+                         class="w-full h-64 object-cover mb-4">
+                    <h3 class="text-lg">${p.name}</h3>
+                    <p class="text-clay font-bold mb-4">${p.price.formatted.price}</p>
+                    <button class="bg-clay text-white w-full py-2" onclick="addToCart('${p.id}')">Add to Cart</button>
+                </div>
+            `).join('');
+        };
+
+        window.addToCart = async (id) => {
+            await client.cart.addToCurrentCart({ productId: id, quantity: 1 });
+            alert('Added to cart!');
+        };
+
+        document.getElementById('cartBtn').onclick = () => window.location.href = 'https://www.cincohranchnaturals.com/checkout';
+
+        document.getElementById('search').oninput = (e) => {
+            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(e.target.value.toLowerCase()));
+            renderProducts(filtered);
+        };
+
+        window.filterProducts = (cat) => {
+            if (cat === 'all') return renderProducts(allProducts);
+            renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(cat)));
+        };
+
+        loadProducts();
+    </script>
 </body>
 </html>
